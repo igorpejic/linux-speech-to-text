@@ -84,10 +84,10 @@ For distributions that don't have a GUI for custom shortcuts, you can use tools 
 
 1. Install xbindkeys: `sudo apt-get install xbindkeys`
 2. Create a configuration file: `xbindkeys --defaults > ~/.xbindkeysrc`
-3. Edit `~/.xbindkeysrc` and add a line like:
+3. Edit `~/.xbindkeysrc` and add a line like (find the keycode of your button using `xev`):
    ```
    "/home/username/scripts/record.bash"
-     F10
+      m:0x0 + c:76
    ```
 4. Run `xbindkeys` to apply the configuration.
 
