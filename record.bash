@@ -8,7 +8,7 @@ IFS=$'\n\t'
 # Configuration
 readonly PID_FILE="${HOME}/.recordpid"
 readonly FILE="${HOME}/.voice-type/recording"
-readonly MAX_DURATION=15
+readonly MAX_DURATION=30
 readonly AUDIO_INPUT='hw:0,6' # Use `arecord -l` to list available devices
 readonly NOTIFICATION_ID_FILE="${HOME}/.voice-type-notification-id"
 
