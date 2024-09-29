@@ -31,7 +31,11 @@ stop_recording() {
   if [ -s "$PID_FILE" ]; then
     local pid
     pid=$(<"$PID_FILE")
-    kill "$pid" && wait "$pid" 2>/dev/null || killall -w arecord
+    if ! kill "$pid" 2>/dev/null; then
+      echo "Warning: Unable to kill process $pid" >&2
+    else
+      wait "$pid" 2>/dev/null
+    fi
     rm -f "$PID_FILE"
     echo "Recording stopped."
     notify-send -r $(cat "$NOTIFICATION_ID_FILE") "Voice Typing" "Recording stopped. Transcribing..."
