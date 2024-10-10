@@ -121,7 +121,10 @@ main() {
     stop_recording
     if [[ -f "$FILE.wav" ]]; then
       transcribe_with_openai && write_transcript
-      rm -f "$NOTIFICATION_ID_FILE" "$FILE.wav" "${FILE}.txt"  # Clean up files after successful transcription
+      # Save the recording with current timestamp in /tmp/
+      local timestamp=$(date +"%Y%m%d_%H%M%S")
+      cp "$FILE.wav" "/tmp/voice_recording_${timestamp}.wav"
+      cp "${FILE}.txt" "/tmp/voice_transcript_${timestamp}.txt"
     else
       echo "Error: Audio file not found. The recording may not have been successful."
       notify-send "Voice Typing" "Error: Audio file not found."
