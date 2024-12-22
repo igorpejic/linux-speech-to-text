@@ -1,61 +1,105 @@
 # Speech-to-Text Keyboard Button
 
-This project provides a script to add a speech-to-text functionality to your keyboard, allowing you to transcribe your voice into text. It's particularly useful for those who have difficulty typing or want to experiment with voice input.
+This project provides scripts to add speech-to-text functionality to your keyboard, allowing you to transcribe your voice into text. It's particularly useful for those who have difficulty typing or want to experiment with voice input.
 
 ## How It Works
 
-The script combines several components to achieve speech-to-text functionality:
+The project provides two implementations:
 
-1. **Recording**: Uses `arecord` to capture audio from your microphone.
-2. **Transcription**: Sends the recorded audio to OpenAI's Whisper API for transcription.
-3. **Text Input**: Uses `xdotool` to type the transcribed text into the active window.
+### Bash Implementation (`record.bash`)
+Uses OpenAI's Whisper API for transcription.
 
-The script is designed to be triggered twice:
+### Python Implementation (`record_fireworks.py`)
+Uses Fireworks AI's Whisper V3 API for transcription.
+
+Both scripts combine several components:
+
+1. **Recording**: Uses `arecord` to capture audio from your microphone
+2. **Transcription**: Sends the recorded audio to the chosen API for transcription
+3. **Text Input**: Uses `xdotool` to type the transcribed text into the active window
+
+The scripts are designed to be triggered twice:
 - First execution: Starts the recording
 - Second execution: Stops the recording, transcribes the audio, and types the result
 
 ## Requirements
 
 - Linux operating system
-- `curl`
-- `jq`
 - `arecord`
 - `xdotool`
 - `killall`
-- An OpenAI API key (for the Whisper transcription service)
+- Python 3.6+ (for `record_fireworks.py`)
+- `requests` Python package (for `record_fireworks.py`)
+- API key (either OpenAI or Fireworks AI)
+- `curl`
+- `jq`
 
 ## Configuration
 
-Before using the script, you need to set up a few configuration variables:
+Before using either script, you need to set up:
 
-Required:
+1. Set your API key in `~/.zshenv`:
+   ```bash
+   # For OpenAI implementation
+   export OPENAI_API_KEY="your-openai-key"
+   # For Fireworks implementation
+   export FIREWORKS_API_KEY="your-fireworks-key"
+   ```
 
-- `AUDIO_INPUT`: Your microphone device (use `arecord -l` to list available devices)
-- `OPEN_AI_TOKEN`: Your OpenAI API key (should be set as an environment variable)
+2. Configure your audio input device:
+   - Use `arecord -l` to list available devices
+   - Update `AUDIO_INPUT` in the script (default: `hw:0,6`)
 
-Optional: 
-
+Optional settings in both scripts:
+- `MAX_DURATION`: Maximum recording duration (default: 120 seconds)
+- Recording file locations and temporary files
 - `PID_FILE`: Location to store the process ID of the recording
 - `FILE`: Base path for temporary files
-- `MAX_DURATION`: Maximum recording duration in seconds
 
 ## Usage
 
-1. Save the script to a file (e.g., `record.bash`).
-2. Make it executable: `chmod +x record.bash`
-3. Set up a keyboard shortcut in your Linux distribution to execute the script.
-4. Press the shortcut once to start recording.
-5. Press it again to stop recording and transcribe the audio.
+1. Make the scripts executable:
+   ```bash
+   chmod +x record.bash record_fireworks.py
+   ```
+
+2. Run either script:
+   ```bash
+   # OpenAI implementation
+   ./record.bash
+   
+   # Fireworks implementation
+   ./record_fireworks.py
+   ```
+
+3. Press once to start recording, press again to stop and transcribe.
 
 The transcribed text will be automatically typed into the active window.
 
+## Security Notes
+
+1. Never commit your API keys to the repository
+2. The `.zshenv` file is ignored by git to prevent accidental exposure of secrets
+3. Temporary recording files are automatically cleaned up after transcription
+
+## Troubleshooting
+
+1. If recording doesn't work:
+   - Check your microphone device ID with `arecord -l`
+   - Update the `AUDIO_INPUT` variable in the script
+
+2. If transcription fails:
+   - Verify your API key is correctly set in `~/.zshenv`
+   - Check your internet connection
+   - Ensure the audio recording is not empty
+
 ## Customization
 
-You can modify the script to use different transcription services or adjust the recording parameters. The original author mentions using Deepgram as an alternative to OpenAI's Whisper for faster transcriptions.
+You can modify the scripts to use different transcription services or adjust the recording parameters.
 
 ## Limitations
 
-- The script is designed for Linux systems and may require modifications for other operating systems.
+- The scripts are designed for Linux systems and may require modifications for other operating systems.
 - Transcription accuracy depends on the quality of the audio input and the performance of the chosen API.
 - There's a maximum recording duration to prevent excessively large files.
 
@@ -96,4 +140,4 @@ Remember to adjust the script path according to your system setup.
 
 ## Credits
 
-This script is inspired by the work of Jérémie Chauvel, as described in his blog post ["Whisper to your keyboard: Setting up a speech-to-text button"](https://blog.theodo.com/2023/11/speech-to-text-keyboard-button/). 
+This project is inspired by the work of Jérémie Chauvel, as described in his blog post ["Whisper to your keyboard: Setting up a speech-to-text button"](https://blog.theodo.com/2023/11/speech-to-text-keyboard-button/).
