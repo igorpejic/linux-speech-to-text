@@ -109,7 +109,8 @@ class AudioRecorder:
                     data={
                         "model": "whisper-v3",
                         "temperature": "0",
-                        "vad_model": "silero"
+                        "vad_model": "silero",
+                        "language": "en",
                     },
                     timeout=30  # Set timeout to 30 seconds
                 )
