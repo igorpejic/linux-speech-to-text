@@ -54,8 +54,8 @@ class TranscriptionManager:
 
         if isinstance(transcript, aai.RealtimeFinalTranscript):
             self.current_text = transcript.text
-            # Type out the final transcript
-            subprocess.run(['xdotool', 'type', '--clearmodifiers', transcript.text + "\n"])
+            # Type out the final transcript without newline
+            subprocess.run(['xdotool', 'type', '--clearmodifiers', transcript.text])
             log_time(f"Final transcript: {transcript.text}")
         else:
             # Update the current partial transcript
@@ -104,6 +104,10 @@ class TranscriptionManager:
             self.stream_thread = threading.Thread(target=self._stream_audio)
             self.stream_thread.start()
             
+            # Add timer thread to stop after 2 minutes
+            self.timer_thread = threading.Thread(target=self._stop_after_timeout)
+            self.timer_thread.start()
+            
             subprocess.run(['notify-send', 'Voice Typing', 'Real-time transcription started'])
             log_time("Transcription started successfully")
             
@@ -118,6 +122,13 @@ class TranscriptionManager:
             self.transcriber.stream(self.stream)
         except Exception as e:
             log_time(f"Streaming error: {e}")
+            self.stop_recording()
+
+    def _stop_after_timeout(self):
+        """Stop recording after 2 minutes"""
+        time.sleep(120)  # 2 minutes = 120 seconds
+        if self.is_running:
+            log_time("Maximum recording time (2 minutes) reached")
             self.stop_recording()
 
     def stop_recording(self):
