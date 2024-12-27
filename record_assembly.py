@@ -54,8 +54,8 @@ class TranscriptionManager:
 
         if isinstance(transcript, aai.RealtimeFinalTranscript):
             self.current_text = transcript.text
-            # Type out the final transcript without newline
-            subprocess.run(['xdotool', 'type', '--clearmodifiers', transcript.text])
+            # Type out the final transcript
+            subprocess.run(['xdotool', 'type', '--clearmodifiers', transcript.text + " "])
             log_time(f"Final transcript: {transcript.text}")
         else:
             # Update the current partial transcript
